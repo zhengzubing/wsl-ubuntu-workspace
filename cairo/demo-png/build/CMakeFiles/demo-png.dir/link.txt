@@ -1,0 +1,1 @@
+/usr/bin/c++ "CMakeFiles/demo-png.dir/cairo-demo.cpp.o" -o demo-png  -lcairo 
