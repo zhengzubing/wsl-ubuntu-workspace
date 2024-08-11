@@ -1,0 +1,3 @@
+/home/zhengzubing/wsl-ubuntu-workspace/opengl/build/CMakeFiles/opengl-demo.dir
+/home/zhengzubing/wsl-ubuntu-workspace/opengl/build/CMakeFiles/edit_cache.dir
+/home/zhengzubing/wsl-ubuntu-workspace/opengl/build/CMakeFiles/rebuild_cache.dir

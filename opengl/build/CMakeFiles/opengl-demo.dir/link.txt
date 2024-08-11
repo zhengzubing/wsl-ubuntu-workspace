@@ -1,0 +1,1 @@
+/usr/bin/c++ "CMakeFiles/opengl-demo.dir/opengl-demo.cpp.o" -o opengl-demo  -lGL -lGLU -lglut 
