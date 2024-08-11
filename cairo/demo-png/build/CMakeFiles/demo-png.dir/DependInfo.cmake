@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/root/workspace/cairo/demo-png/cairo-demo.cpp" "CMakeFiles/demo-png.dir/cairo-demo.cpp.o" "gcc" "CMakeFiles/demo-png.dir/cairo-demo.cpp.o.d"
+  "/home/zhengzubing/wsl-ubuntu-workspace/cairo/demo-png/cairo-demo.cpp" "CMakeFiles/demo-png.dir/cairo-demo.cpp.o" "gcc" "CMakeFiles/demo-png.dir/cairo-demo.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.
