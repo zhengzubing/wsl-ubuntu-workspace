@@ -1,0 +1,6 @@
+build/
+skia/third-party/depot_tools
+skia/third-party/ninja
+skia/third-party/skia
+*.a
+*.so
