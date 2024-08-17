@@ -121,8 +121,9 @@ int main()
     // GL_DYNAMIC_DRAW：数据会被改变很多。
     // GL_STREAM_DRAW ：数据每次绘制时都会改变。
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
+    // 说明如何解析VBO 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    // 启用顶点属性， 0 代表layout (location = 0)
     glEnableVertexAttribArray(0);
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
