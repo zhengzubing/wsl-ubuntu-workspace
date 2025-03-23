@@ -1,9 +1,10 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.16)
 project(opengl-demo)                                          #必须
 
-#add_subdirectory(opengl-demo)                         #父目录必须，子目录不必
-
-#add_library(库文件名称 STATIC 文件)                    #通常子目录(二选一)
+# 如果包未安装，则使用 APT 进行安装
+execute_process(
+    COMMAND sudo apt install -y freeglut3-dev libglfw3-dev libc6-dev
+)
 
 add_executable(opengl-demo ./opengl-demo.cpp)                     #通常父目录(二选一)
 
