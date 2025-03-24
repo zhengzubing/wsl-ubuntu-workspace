@@ -1,4 +1,5 @@
 #include <GL/glut.h>
+#include <iostream>
 
 void init(void)
 {
@@ -13,6 +14,7 @@ void init(void)
 
 void display(void)
 {
+    std::cout << "display" << std::endl;
     glClear(GL_COLOR_BUFFER_BIT);
     glColor3f(1.0, 0, 0);
     glutWireTeapot(3);
