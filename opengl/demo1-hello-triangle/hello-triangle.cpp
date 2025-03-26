@@ -1,5 +1,5 @@
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 #include <iostream>
 
@@ -7,8 +7,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 
 GLFWwindow *window;
-int pre()
-{
+int pre() {
     bool ret = true;
 
     // glfw: initialize and configure
@@ -22,8 +21,7 @@ int pre()
     const unsigned int SCR_HEIGHT = 600;
     // glfw window creation
     window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
-    {
+    if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return false;
@@ -32,8 +30,7 @@ int pre()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // glad: load all OpenGL function pointers
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return false;
     }
@@ -42,21 +39,22 @@ int pre()
 }
 
 unsigned int shaderProgram;
-void initShader()
-{
-    const char *vertexShaderSource = "#version 330 core\n"
-                                     "layout (location = 0) in vec3 aPos;\n"
-                                     "void main()\n"
-                                     "{\n"
-                                     "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-                                     "}\0";
+void initShader() {
+    const char *vertexShaderSource =
+        "#version 330 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+        "}\0";
 
-    const char *fragmentShaderSource = "#version 330 core\n"
-                                       "out vec4 FragColor;\n"
-                                       "void main()\n"
-                                       "{\n"
-                                       "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-                                       "}\n\0";
+    const char *fragmentShaderSource =
+        "#version 330 core\n"
+        "out vec4 FragColor;\n"
+        "void main()\n"
+        "{\n"
+        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+        "}\n\0";
 
     // vertex shader
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -79,17 +77,17 @@ void initShader()
 }
 
 unsigned int VBO, VAO;
-void initObject()
-{
+void initObject() {
     // set up vertex data (and buffer(s)) and configure vertex attributes
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f, // left
-        0.5f, -0.5f, 0.0f,  // right
-        0.0f, 0.5f, 0.0f    // top
+        -0.5f, -0.5f, 0.0f,  // left
+        0.5f,  -0.5f, 0.0f,  // right
+        0.0f,  0.5f,  0.0f   // top
     };
 
     // VAO: 保存顶点属性配置(glVertexAttribPointer)和 VBO 绑定状态的对象
-    // VBO(Vertex buffer Object)：在GPU内存（通常被称为显存）中储存大量顶点数据（坐标、颜色等）
+    // VBO(Vertex buffer
+    // Object)：在GPU内存（通常被称为显存）中储存大量顶点数据（坐标、颜色等）
     // EBO/IBO(Index buffer Object): 在GPU内存（通常被称为显存）中储存顶点的索引
 
     glGenVertexArrays(1, &VAO);
@@ -105,47 +103,53 @@ void initObject()
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // 说明如何解析VBO
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
+                          (void *)0);
     // 启用顶点属性， 0 代表layout (location = 0)
     glEnableVertexAttribArray(0);
 
-    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+    // note that this is allowed, the call to glVertexAttribPointer registered
+    // VBO as the vertex attribute's bound vertex buffer object so afterwards we
+    // can safely unbind
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+    // You can unbind the VAO afterwards so other VAO calls won't accidentally
+    // modify this VAO, but this rarely happens. Modifying other VAOs requires a
+    // call to glBindVertexArray anyways so we generally don't unbind VAOs (nor
+    // VBOs) when it's not directly necessary.
     glBindVertexArray(0);
 }
 
-void loop()
-{
-    // 若在整个渲染循环里只使用一个着色器程序，那么 glUseProgram(shaderProgram); 只需在进入循环之前调用一次即可。
+void loop() {
+    // 若在整个渲染循环里只使用一个着色器程序，那么 glUseProgram(shaderProgram);
+    // 只需在进入循环之前调用一次即可。
     glUseProgram(shaderProgram);
 
     // glClear 函数默认不会处理 alpha 通道
     glClearColor(0.3f, 0.3f, 0.3f, 0.1f);
 
     // render loop
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
         // input
         processInput(window);
 
         // render
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+        glBindVertexArray(VAO);  // seeing as we only have a single VAO there's
+                                 // no need to bind it every time, but we'll do
+                                 // so to keep things a bit more organized
         glDrawArrays(GL_TRIANGLES, 0, 3);
         // glBindVertexArray(0); // no need to unbind it every time
 
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+        // glfw: swap buffers and poll IO events (keys pressed/released, mouse
+        // moved etc.)
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 }
 
-void post()
-{
+void post() {
     // optional: de-allocate all resources once they've outlived their purpose:
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
@@ -155,10 +159,8 @@ void post()
     glfwTerminate();
 }
 
-int main()
-{
-    if (!pre())
-    {
+int main() {
+    if (!pre()) {
         return false;
     }
 
@@ -171,19 +173,20 @@ int main()
     return 0;
 }
 
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+// process all input: query GLFW whether relevant keys are pressed/released this
+// frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow *window)
-{
+void processInput(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
 
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+// glfw: whenever the window size changed (by OS or user resize) this callback
+// function executes
 // ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow *window, int width, int height)
-{
-    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
+void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
+    // make sure the viewport matches the new window dimensions; note that width
+    // and height will be significantly larger than specified on retina
+    // displays.
     glViewport(0, 0, width, height);
 }

@@ -9,128 +9,144 @@
 #include <GL/glx.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <dlfcn.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <dlfcn.h>
 
 // 返回值和参数需要与OpenGL提供的函数起来
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // GLAD 加载函数指针
-typedef const GLubyte * (APIENTRYP PFNGLGETSTRINGPROC)(GLenum name);
+typedef const GLubyte *(APIENTRYP PFNGLGETSTRINGPROC)(GLenum name);
 PFNGLGETSTRINGPROC glad_glGetString = NULL;
 #define glGetString glad_glGetString
 
-typedef GLuint (APIENTRYP PFNGLCREATESHADERPROC)(GLenum type);
+typedef GLuint(APIENTRYP PFNGLCREATESHADERPROC)(GLenum type);
 PFNGLCREATESHADERPROC glad_glCreateShader = NULL;
 #define glCreateShader glad_glCreateShader
 
-typedef void (APIENTRYP PFNGLSHADERSOURCEPROC)(GLuint shader, GLsizei count, const GLchar *const*string, const GLint *length);
+typedef void(APIENTRYP PFNGLSHADERSOURCEPROC)(GLuint shader, GLsizei count,
+                                              const GLchar *const *string,
+                                              const GLint *length);
 PFNGLSHADERSOURCEPROC glad_glShaderSource = NULL;
 #define glShaderSource glad_glShaderSource
 
-typedef void (APIENTRYP PFNGLCOMPILESHADERPROC)(GLuint shader);
+typedef void(APIENTRYP PFNGLCOMPILESHADERPROC)(GLuint shader);
 PFNGLCOMPILESHADERPROC glad_glCompileShader = NULL;
 #define glCompileShader glad_glCompileShader
 
-typedef void (APIENTRYP PFNGLGETSHADERIVPROC)(GLuint shader, GLenum pname, GLint *params);
+typedef void(APIENTRYP PFNGLGETSHADERIVPROC)(GLuint shader, GLenum pname,
+                                             GLint *params);
 PFNGLGETSHADERIVPROC glad_glGetShaderiv = NULL;
 #define glGetShaderiv glad_glGetShaderiv
 
-typedef void (APIENTRYP PFNGLGETSHADERINFOLOGPROC)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
+typedef void(APIENTRYP PFNGLGETSHADERINFOLOGPROC)(GLuint shader,
+                                                  GLsizei bufSize,
+                                                  GLsizei *length,
+                                                  GLchar *infoLog);
 PFNGLGETSHADERINFOLOGPROC glad_glGetShaderInfoLog = NULL;
 #define glGetShaderInfoLog glad_glGetShaderInfoLog
 
-typedef GLuint (APIENTRYP PFNGLCREATEPROGRAMPROC)(void);
- PFNGLCREATEPROGRAMPROC glad_glCreateProgram = NULL;
+typedef GLuint(APIENTRYP PFNGLCREATEPROGRAMPROC)(void);
+PFNGLCREATEPROGRAMPROC glad_glCreateProgram = NULL;
 #define glCreateProgram glad_glCreateProgram
 
-typedef void (APIENTRYP PFNGLATTACHSHADERPROC)(GLuint program, GLuint shader);
+typedef void(APIENTRYP PFNGLATTACHSHADERPROC)(GLuint program, GLuint shader);
 PFNGLATTACHSHADERPROC glad_glAttachShader = NULL;
 #define glAttachShader glad_glAttachShader
 
-typedef void (APIENTRYP PFNGLLINKPROGRAMPROC)(GLuint program);
+typedef void(APIENTRYP PFNGLLINKPROGRAMPROC)(GLuint program);
 PFNGLLINKPROGRAMPROC glad_glLinkProgram = NULL;
 #define glLinkProgram glad_glLinkProgram
 
-typedef void (APIENTRYP PFNGLGETPROGRAMIVPROC)(GLuint program, GLenum pname, GLint *params);
- PFNGLGETPROGRAMIVPROC glad_glGetProgramiv = NULL;
+typedef void(APIENTRYP PFNGLGETPROGRAMIVPROC)(GLuint program, GLenum pname,
+                                              GLint *params);
+PFNGLGETPROGRAMIVPROC glad_glGetProgramiv = NULL;
 #define glGetProgramiv glad_glGetProgramiv
 
-typedef void (APIENTRYP PFNGLGETPROGRAMINFOLOGPROC)(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
- PFNGLGETPROGRAMINFOLOGPROC glad_glGetProgramInfoLog = NULL;
+typedef void(APIENTRYP PFNGLGETPROGRAMINFOLOGPROC)(GLuint program,
+                                                   GLsizei bufSize,
+                                                   GLsizei *length,
+                                                   GLchar *infoLog);
+PFNGLGETPROGRAMINFOLOGPROC glad_glGetProgramInfoLog = NULL;
 #define glGetProgramInfoLog glad_glGetProgramInfoLog
 
-typedef void (APIENTRYP PFNGLDELETESHADERPROC)(GLuint shader);
+typedef void(APIENTRYP PFNGLDELETESHADERPROC)(GLuint shader);
 PFNGLDELETESHADERPROC glad_glDeleteShader = NULL;
 #define glDeleteShader glad_glDeleteShader
 
-typedef void (APIENTRYP PFNGLGENVERTEXARRAYSPROC)(GLsizei n, GLuint *arrays);
+typedef void(APIENTRYP PFNGLGENVERTEXARRAYSPROC)(GLsizei n, GLuint *arrays);
 PFNGLGENVERTEXARRAYSPROC glad_glGenVertexArrays = NULL;
 #define glGenVertexArrays glad_glGenVertexArrays
 
-typedef void (APIENTRYP PFNGLGENBUFFERSPROC)(GLsizei n, GLuint *buffers);
+typedef void(APIENTRYP PFNGLGENBUFFERSPROC)(GLsizei n, GLuint *buffers);
 PFNGLGENBUFFERSPROC glad_glGenBuffers = NULL;
 #define glGenBuffers glad_glGenBuffers
 
-typedef void (APIENTRYP PFNGLBINDVERTEXARRAYPROC)(GLuint array);
+typedef void(APIENTRYP PFNGLBINDVERTEXARRAYPROC)(GLuint array);
 PFNGLBINDVERTEXARRAYPROC glad_glBindVertexArray;
 #define glBindVertexArray glad_glBindVertexArray
 
-typedef void (APIENTRYP PFNGLBINDBUFFERPROC)(GLenum target, GLuint buffer);
+typedef void(APIENTRYP PFNGLBINDBUFFERPROC)(GLenum target, GLuint buffer);
 PFNGLBINDBUFFERPROC glad_glBindBuffer = NULL;
 #define glBindBuffer glad_glBindBuffer
 
-typedef void (APIENTRYP PFNGLBUFFERDATAPROC)(GLenum target, GLsizeiptr size, const void *data, GLenum usage);
+typedef void(APIENTRYP PFNGLBUFFERDATAPROC)(GLenum target, GLsizeiptr size,
+                                            const void *data, GLenum usage);
 PFNGLBUFFERDATAPROC glad_glBufferData = NULL;
 #define glBufferData glad_glBufferData
 
-typedef void (APIENTRYP PFNGLVERTEXATTRIBPOINTERPROC)(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *pointer);
- PFNGLVERTEXATTRIBPOINTERPROC glad_glVertexAttribPointer = NULL;
+typedef void(APIENTRYP PFNGLVERTEXATTRIBPOINTERPROC)(GLuint index, GLint size,
+                                                     GLenum type,
+                                                     GLboolean normalized,
+                                                     GLsizei stride,
+                                                     const void *pointer);
+PFNGLVERTEXATTRIBPOINTERPROC glad_glVertexAttribPointer = NULL;
 #define glVertexAttribPointer glad_glVertexAttribPointer
 
-typedef void (APIENTRYP PFNGLENABLEVERTEXATTRIBARRAYPROC)(GLuint index);
+typedef void(APIENTRYP PFNGLENABLEVERTEXATTRIBARRAYPROC)(GLuint index);
 PFNGLENABLEVERTEXATTRIBARRAYPROC glad_glEnableVertexAttribArray = NULL;
 #define glEnableVertexAttribArray glad_glEnableVertexAttribArray
 
-typedef void (APIENTRYP PFNGLCLEARCOLORPROC)(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
+typedef void(APIENTRYP PFNGLCLEARCOLORPROC)(GLfloat red, GLfloat green,
+                                            GLfloat blue, GLfloat alpha);
 PFNGLCLEARCOLORPROC glad_glClearColor = NULL;
 #define glClearColor glad_glClearColor
 
-typedef void (APIENTRYP PFNGLCLEARPROC)(GLbitfield mask);
+typedef void(APIENTRYP PFNGLCLEARPROC)(GLbitfield mask);
 PFNGLCLEARPROC glad_glClear = NULL;
 #define glClear glad_glClear
 
-typedef void (APIENTRYP PFNGLUSEPROGRAMPROC)(GLuint program);
+typedef void(APIENTRYP PFNGLUSEPROGRAMPROC)(GLuint program);
 PFNGLUSEPROGRAMPROC glad_glUseProgram = NULL;
 #define glUseProgram glad_glUseProgram
 
-typedef void (APIENTRYP PFNGLBINDVERTEXARRAYPROC)(GLuint array);
+typedef void(APIENTRYP PFNGLBINDVERTEXARRAYPROC)(GLuint array);
 PFNGLBINDVERTEXARRAYPROC glad_glBindVertexArray = NULL;
 #define glBindVertexArray glad_glBindVertexArray
 
-typedef void (APIENTRYP PFNGLDRAWARRAYSPROC)(GLenum mode, GLint first, GLsizei count);
+typedef void(APIENTRYP PFNGLDRAWARRAYSPROC)(GLenum mode, GLint first,
+                                            GLsizei count);
 PFNGLDRAWARRAYSPROC glad_glDrawArrays = NULL;
 #define glDrawArrays glad_glDrawArrays
 
-
-void* libGL;
-typedef void* (* PFNGLXGETPROCADDRESSPROC_PRIVATE)(const char*);
+void *libGL;
+typedef void *(*PFNGLXGETPROCADDRESSPROC_PRIVATE)(const char *);
 PFNGLXGETPROCADDRESSPROC_PRIVATE gladGetProcAddressPtr;
 
 // 给gladGetProcAddressPtr赋值，成功返回1，失败返回0
 int open_gl(void) {
     const char *NAMES[] = {"libGL.so.1", "libGL.so"};
     unsigned int index = 0;
-    for(index = 0; index < (sizeof(NAMES) / sizeof(NAMES[0])); index++) {
+    for (index = 0; index < (sizeof(NAMES) / sizeof(NAMES[0])); index++) {
         // 动态加载so库
         libGL = dlopen(NAMES[index], RTLD_NOW | RTLD_GLOBAL);
-        if(libGL != NULL) {
+        if (libGL != NULL) {
             // 查找函数或者全局变量地址
-            gladGetProcAddressPtr = (PFNGLXGETPROCADDRESSPROC_PRIVATE)dlsym(libGL,
-                "glXGetProcAddressARB");
+            gladGetProcAddressPtr = (PFNGLXGETPROCADDRESSPROC_PRIVATE)dlsym(
+                libGL, "glXGetProcAddressARB");
             return gladGetProcAddressPtr != NULL;
         }
     }
@@ -138,76 +154,76 @@ int open_gl(void) {
 }
 
 void close_gl(void) {
-    if(libGL != NULL) {
+    if (libGL != NULL) {
         dlclose(libGL);
         libGL = NULL;
     }
 }
 
 // 根据函数名查找函数地址
-void* get_proc(const char *namez) {
-    void* result = NULL;
-    if(libGL == NULL) return NULL;
-    if(gladGetProcAddressPtr != NULL)
-        result = gladGetProcAddressPtr(namez);
-    if(result == NULL)
-        result = dlsym(libGL, namez);
+void *get_proc(const char *namez) {
+    void *result = NULL;
+    if (libGL == NULL) return NULL;
+    if (gladGetProcAddressPtr != NULL) result = gladGetProcAddressPtr(namez);
+    if (result == NULL) result = dlsym(libGL, namez);
     return result;
 }
 
 // 封装函数调用，使其看起来像直接调用OpenGL函数
-typedef void* (* GLADloadproc)(const char *name);
+typedef void *(*GLADloadproc)(const char *name);
 int gladLoadGLLoader(GLADloadproc load) {
     glad_glGetString = (PFNGLGETSTRINGPROC)load("glGetString");
     glad_glCreateShader = (PFNGLCREATESHADERPROC)load("glCreateShader");
     glad_glShaderSource = (PFNGLSHADERSOURCEPROC)load("glShaderSource");
     glad_glCompileShader = (PFNGLCOMPILESHADERPROC)load("glCompileShader");
     glad_glGetShaderiv = (PFNGLGETSHADERIVPROC)load("glGetShaderiv");
-    glad_glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)load("glGetShaderInfoLog");
+    glad_glGetShaderInfoLog =
+        (PFNGLGETSHADERINFOLOGPROC)load("glGetShaderInfoLog");
     glad_glCreateProgram = (PFNGLCREATEPROGRAMPROC)load("glCreateProgram");
     glad_glAttachShader = (PFNGLATTACHSHADERPROC)load("glAttachShader");
     glad_glLinkProgram = (PFNGLLINKPROGRAMPROC)load("glLinkProgram");
     glad_glGetProgramiv = (PFNGLGETPROGRAMIVPROC)load("glGetProgramiv");
-    glad_glGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)load("glGetProgramInfoLog");
+    glad_glGetProgramInfoLog =
+        (PFNGLGETPROGRAMINFOLOGPROC)load("glGetProgramInfoLog");
     glad_glDeleteShader = (PFNGLDELETESHADERPROC)load("glDeleteShader");
-    glad_glGenVertexArrays = (PFNGLGENVERTEXARRAYSPROC)load("glGenVertexArrays");
+    glad_glGenVertexArrays =
+        (PFNGLGENVERTEXARRAYSPROC)load("glGenVertexArrays");
     glad_glGenBuffers = (PFNGLGENBUFFERSPROC)load("glGenBuffers");
-    glad_glBindVertexArray = (PFNGLBINDVERTEXARRAYPROC)load("glBindVertexArray");
+    glad_glBindVertexArray =
+        (PFNGLBINDVERTEXARRAYPROC)load("glBindVertexArray");
     glad_glBindBuffer = (PFNGLBINDBUFFERPROC)load("glBindBuffer");
     glad_glBufferData = (PFNGLBUFFERDATAPROC)load("glBufferData");
-    glad_glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)load("glVertexAttribPointer");
-    glad_glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)load("glEnableVertexAttribArray");
+    glad_glVertexAttribPointer =
+        (PFNGLVERTEXATTRIBPOINTERPROC)load("glVertexAttribPointer");
+    glad_glEnableVertexAttribArray =
+        (PFNGLENABLEVERTEXATTRIBARRAYPROC)load("glEnableVertexAttribArray");
     glad_glClearColor = (PFNGLCLEARCOLORPROC)load("glClearColor");
     glad_glClear = (PFNGLCLEARPROC)load("glClear");
     glad_glUseProgram = (PFNGLUSEPROGRAMPROC)load("glUseProgram");
-    glad_glBindVertexArray = (PFNGLBINDVERTEXARRAYPROC)load("glBindVertexArray");
+    glad_glBindVertexArray =
+        (PFNGLBINDVERTEXARRAYPROC)load("glBindVertexArray");
     glad_glDrawArrays = (PFNGLDRAWARRAYSPROC)load("glDrawArrays");
     return 0;
 }
 
 int gladLoadGL(void) {
     int status = 0;
-    if(open_gl()) {
+    if (open_gl()) {
         // 初始化glad
         status = gladLoadGLLoader(&get_proc);
         close_gl();
     }
-    const char *version = (const char*) glGetString(GL_VERSION);
+    const char *version = (const char *)glGetString(GL_VERSION);
     printf("OpenGL version: %s\n", version);
     return status;
 }
 // end of GLAD
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // GLFW 创建窗口，关联 OpenGL 环境
-#define WIDTH           800 
-#define HEIGHT          600 
+#define WIDTH 800
+#define HEIGHT 600
 #define GLX_CONTEXT_MAJOR_VERSION_ARB 0x2091
 #define GLX_CONTEXT_MINOR_VERSION_ARB 0x2092
 typedef GLXContext (*glXCreateContextAttribsARBProc)(Display *, GLXFBConfig,
@@ -333,9 +349,9 @@ void glfwCreateWindowAndGLContext() {
     swa.event_mask = StructureNotifyMask;
 
     printf("Creating window\n");
-    win = XCreateWindow(display, RootWindow(display, vi->screen), 0, 0,
-                               WIDTH, HEIGHT, 0, vi->depth, InputOutput, vi->visual,
-                               CWBorderPixel | CWColormap | CWEventMask, &swa);
+    win = XCreateWindow(display, RootWindow(display, vi->screen), 0, 0, WIDTH,
+                        HEIGHT, 0, vi->depth, InputOutput, vi->visual,
+                        CWBorderPixel | CWColormap | CWEventMask, &swa);
     if (!win) {
         printf("Failed to create window.\n");
         exit(1);
@@ -352,7 +368,7 @@ void glfwCreateWindowAndGLContext() {
     // Get the default screen's GLX extension list
     const char *glxExts =
         glXQueryExtensionsString(display, DefaultScreen(display));
-    
+
     printf("glxExts: %s\n", glxExts);
 
     // NOTE: It is not necessary to create or make current to a context before
@@ -449,13 +465,15 @@ int main(int argc, char *argv[]) {
     gladLoadGL();
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // LearnOpenGL.com  -- hello triangle
-    const char *vertexShaderSource = "#version 330 core\n"
+    const char *vertexShaderSource =
+        "#version 330 core\n"
         "layout (location = 0) in vec3 aPos;\n"
         "void main() {\n"
         "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
         "}\n";
 
-    const char *fragmentShaderSource = "#version 330 core\n"
+    const char *fragmentShaderSource =
+        "#version 330 core\n"
         "out vec4 FragColor;\n"
         "void main() {\n"
         "   FragColor = vec4(0.8f, 0.5f, 0.2f, 1.0f);\n"
@@ -473,7 +491,8 @@ int main(int argc, char *argv[]) {
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        fprintf(stderr, "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n %s \n", infoLog);
+        fprintf(stderr, "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n %s \n",
+                infoLog);
     }
     // fragment shader
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -483,7 +502,8 @@ int main(int argc, char *argv[]) {
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        fprintf(stderr, "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n %s \n", infoLog);
+        fprintf(stderr, "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n %s \n",
+                infoLog);
     }
     // link shaders
     GLuint shaderProgram = glCreateProgram();
@@ -494,7 +514,8 @@ int main(int argc, char *argv[]) {
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        fprintf(stderr, "ERROR::SHADER::PROGRAM::LINKING_FAILED\n %s \n", infoLog);
+        fprintf(stderr, "ERROR::SHADER::PROGRAM::LINKING_FAILED\n %s \n",
+                infoLog);
     }
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
@@ -502,17 +523,18 @@ int main(int argc, char *argv[]) {
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     GLfloat vertices[] = {
-        -0.5f, -0.5f, 0.0f, // left  
-         0.5f, -0.5f, 0.0f, // right 
-         0.0f,  0.5f, 0.0f  // top   
-    }; 
+        -0.5f, -0.5f, 0.0f,  // left
+        0.5f,  -0.5f, 0.0f,  // right
+        0.0f,  0.5f,  0.0f   // top
+    };
 
     GLuint VBO, VAO;
     glGenVertexArrays(1, &VAO);
 
     // 在GPU创建缓存
     glGenBuffers(1, &VBO);
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+    // bind the Vertex Array Object first, then bind and set vertex buffer(s),
+    // and then configure vertex attributes(s).
     glBindVertexArray(VAO);
 
     // 设定缓存类型
@@ -521,26 +543,33 @@ int main(int argc, char *argv[]) {
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // 告诉 GPU 如何解析传过去的内存数据
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),
+                          (void *)0);
     glEnableVertexAttribArray(0);
 
-    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+    // note that this is allowed, the call to glVertexAttribPointer registered
+    // VBO as the vertex attribute's bound vertex buffer object so afterwards we
+    // can safely unbind
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-    glBindVertexArray(0); 
+    // You can unbind the VAO afterwards so other VAO calls won't accidentally
+    // modify this VAO, but this rarely happens. Modifying other VAOs requires a
+    // call to glBindVertexArray anyways so we generally don't unbind VAOs (nor
+    // VBOs) when it's not directly necessary.
+    glBindVertexArray(0);
 
-    /* Animation loop */ 
-    while (1) { 
+    /* Animation loop */
+    while (1) {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // draw our first triangle
-        glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+        glBindVertexArray(VAO);  // seeing as we only have a single VAO there's
+                                 // no need to bind it every time, but we'll do
+                                 // so to keep things a bit more organized
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glXSwapBuffers(display, win);
-    } 
+    }
 
     return 0;
 }
