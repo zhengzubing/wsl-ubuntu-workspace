@@ -1,4 +1,5 @@
 #include <cairo.h>
+
 int main(int argc, char *argv[]) {
     cairo_surface_t *surface =
         cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 240, 80);

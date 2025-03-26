@@ -1,3 +1,0 @@
-/home/zhengzubing/wsl-ubuntu-workspace/cairo/demo-png/build/CMakeFiles/demo-png.dir
-/home/zhengzubing/wsl-ubuntu-workspace/cairo/demo-png/build/CMakeFiles/edit_cache.dir
-/home/zhengzubing/wsl-ubuntu-workspace/cairo/demo-png/build/CMakeFiles/rebuild_cache.dir
